@@ -6,70 +6,77 @@ struct CalendarView: View {
     @Query private var clickedDates: [ClickedDate]
     @Environment(\.modelContext) private var modelContext
     @State private var isEditing: Bool = false
-    
+    @State private var currentOffset: Int = 0  // ← 현재 월 오프셋
+
     var body: some View {
         VStack(spacing: 0) {
             headerView
-            calendarGridView
-        }
-        .gesture(
-            DragGesture()
-                .onEnded { gesture in
-                    if gesture.translation.width < -100 {
-                        vm.changeMonth(by: 1)
-                    } else if gesture.translation.width > 100 {
-                        vm.changeMonth(by: -1)
-                    }
-                }
-        )
-    }
-
-    // MARK: - 헤더 뷰
-    private var headerView: some View {
-        VStack {
-            HStack{
-                Spacer()
-                Text(vm.monthTitle)
-                    .font(.title)
-                Spacer()
-                Button(isEditing ? "완료" : "수정"){
-                    isEditing.toggle()
-                }
-                .foregroundStyle(.blue)
-                .padding(.trailing)
-            }.padding(.bottom)
-           
-            HStack {
-                ForEach(CalendarViewModel.weekdaySymbols, id: \.self) { symbol in
-                    Text(symbol)
-                        .frame(maxWidth: .infinity)
+            weekdayHeader
+            
+            TabView(selection: $currentOffset) {
+                ForEach(-12 ..< 12, id: \.self) { offset in
+                    monthGridView(for: vm.month(for: offset))
+                        .tag(offset)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)  
                 }
             }
-            .padding(.bottom, 5)
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .onChange(of: currentOffset) { _, newOffset in
+                vm.month = vm.month(for: newOffset)
+            }
         }
     }
 
-    // MARK: - 날짜 그리드 뷰
-    private var calendarGridView: some View {
-        let totalCells = vm.daysInMonth + vm.firstWeekday
+    // MARK: - 헤더
+    private var headerView: some View {
+        HStack {
+            Spacer()
+            Text(vm.monthTitle)
+                .font(.title)
+            Spacer()
+            Button(isEditing ? "완료" : "수정") {
+                isEditing.toggle()
+            }
+            .foregroundColor(.blue)
+            .padding(.trailing)
+        }
+        .padding(.vertical, 12)  // 위아래 패딩만
+    }
+
+    private var weekdayHeader: some View {
+        HStack {
+            ForEach(CalendarViewModel.weekdaySymbols, id: \.self) { symbol in
+                Text(symbol)
+                    .frame(maxWidth: .infinity)
+            }
+        }
+        .padding(.vertical, 8)
+        .background(Color.gray.opacity(0.05))  // 살짝 구분선 느낌
+    }
+
+    // MARK: - 월별 그리드
+    private func monthGridView(for month: Date) -> some View {
+        let daysInMonth = Calendar.current.range(of: .day, in: .month, for: month)?.count ?? 0
+        let firstWeekday = firstWeekdayOf(month: month)
+        let totalCells = daysInMonth + firstWeekday
         let totalRows = Int(ceil(Double(totalCells) / 7.0))
 
         return LazyVGrid(columns: Array(repeating: GridItem(spacing: 0), count: 7), spacing: 0) {
             ForEach(0 ..< totalRows * 7, id: \.self) { index in
-                cellView(for: index, totalCells: totalCells)
+                cellView(for: index, totalCells: totalCells, firstWeekday: firstWeekday, month: month)
             }
         }
     }
 
     @ViewBuilder
-    private func cellView(for index: Int, totalCells: Int) -> some View {
-        if index < vm.firstWeekday || index >= totalCells {
+    private func cellView(for index: Int, totalCells: Int, firstWeekday: Int, month: Date) -> some View {
+        if index < firstWeekday || index >= totalCells {
             Color.clear
                 .frame(maxWidth: .infinity, minHeight: 80)
                 .border(Color.gray.opacity(0.3), width: 0.5)
         } else {
-            let date = vm.getDate(for: index - vm.firstWeekday)
-            let day = index - vm.firstWeekday + 1
+            let date = getDate(for: index - firstWeekday, in: month)
+            let day = index - firstWeekday + 1
 
             CellView(
                 day: day,
@@ -77,14 +84,26 @@ struct CalendarView: View {
                 isToday: Calendar.current.isDateInToday(date)
             )
             .onTapGesture {
-                if isEditing{
+                if isEditing {
                     toggleDate(date)
                 }
             }
         }
     }
 
-    // MARK: - 메서드
+    // MARK: - 헬퍼
+    private func firstWeekdayOf(month: Date) -> Int {
+        let components = Calendar.current.dateComponents([.year, .month], from: month)
+        let firstDay = Calendar.current.date(from: components)!
+        return Calendar.current.component(.weekday, from: firstDay) - 1
+    }
+
+    private func getDate(for day: Int, in month: Date) -> Date {
+        let components = Calendar.current.dateComponents([.year, .month], from: month)
+        let startOfMonth = Calendar.current.date(from: components)!
+        return Calendar.current.date(byAdding: .day, value: day, to: startOfMonth)!
+    }
+
     private func isClicked(_ date: Date) -> Bool {
         clickedDates.contains { Calendar.current.isDate($0.date, inSameDayAs: date) }
     }

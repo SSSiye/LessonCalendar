@@ -5,7 +5,11 @@ import SwiftUI
 class CalendarViewModel: ObservableObject {
     @Published var month: Date
     @Published var clickedDates: Set<Date> = []
-    
+    @Published var monthOffset: Int = 0
+
+    func month(for offset: Int) -> Date {
+        Calendar.current.date(byAdding: .month, value: offset, to: Date()) ?? Date()
+    }
     init(month: Date) {
         self.month = month
     }
@@ -61,9 +65,10 @@ class CalendarViewModel: ObservableObject {
     
     static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy"
+        formatter.dateFormat = "yyyy년 M월"
         return formatter
     }()
     
-    static let weekdaySymbols = Calendar.current.veryShortWeekdaySymbols
+    static let weekdaySymbols =
+    ["일", "월", "화", "수", "목", "금", "토"]
 }
