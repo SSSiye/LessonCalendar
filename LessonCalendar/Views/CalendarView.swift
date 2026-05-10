@@ -43,11 +43,15 @@ struct CalendarView: View {
     // MARK: - 날짜 그리드 뷰
     
     private var calendarGridView: some View {
-        LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
-            ForEach(0 ..< vm.daysInMonth + vm.firstWeekday, id: \.self) { index in
-                if index < vm.firstWeekday {
+        let totalCells = vm.daysInMonth + vm.firstWeekday
+        let totalRows = Int(ceil(Double(totalCells) / 7.0))
+        
+        return LazyVGrid(columns: Array(repeating: GridItem(spacing: 0), count: 7), spacing: 0) {
+            ForEach(0 ..< totalRows * 7, id: \.self) { index in
+                if index < vm.firstWeekday || index >= totalCells {
                     Color.clear
-                        .aspectRatio(1, contentMode: .fit) // 빈 칸 비율 유지
+                        .frame(maxWidth: .infinity, minHeight: 40)
+                        .border(Color.gray.opacity(0.3), width: 0.5)
                 } else {
                     let date = vm.getDate(for: index - vm.firstWeekday)
                     let day = index - vm.firstWeekday + 1
@@ -63,26 +67,29 @@ struct CalendarView: View {
 }
 
 // MARK: - CellView.swift
-
 private struct CellView: View {
     let day: Int
     let clicked: Bool
     
     var body: some View {
-        VStack {
-            RoundedRectangle(cornerRadius: 5)
-                .opacity(0)
-                .overlay(Text(String(day)))
-                .foregroundColor(.blue)
-            
-            if clicked {
-                Text("Click")
-                    .font(.caption)
-                    .foregroundColor(.red)
-            }
+        VStack(spacing: 4) {
+            Text(String(day))
+                .font(.system(size: 14))
+                .foregroundColor(clicked ? .white : .primary)
+                .frame(maxWidth: .infinity, minHeight: 80)
+                .background(clicked ? Color.blue : Color.clear)
+//            
+//            if clicked {
+//                Text("Click")
+//                    .font(.caption)
+//                    .foregroundColor(.red)
+//            }
         }
+        .frame(maxWidth: .infinity, minHeight: 40)
+        .border(Color.gray.opacity(0.3), width: 0.5) // ← 셀 테두리
     }
 }
+
 
 // MARK: - Preview
 
