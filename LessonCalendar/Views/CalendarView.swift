@@ -5,7 +5,8 @@ struct CalendarView: View {
     @StateObject private var vm = CalendarViewModel(month: Date())
     @Query private var clickedDates: [ClickedDate]
     @Environment(\.modelContext) private var modelContext
-
+    @State private var isEditing: Bool = false
+    
     var body: some View {
         VStack(spacing: 0) {
             headerView
@@ -26,10 +27,18 @@ struct CalendarView: View {
     // MARK: - 헤더 뷰
     private var headerView: some View {
         VStack {
-            Text(vm.monthTitle)
-                .font(.title)
-                .padding(.bottom)
-
+            HStack{
+                Spacer()
+                Text(vm.monthTitle)
+                    .font(.title)
+                Spacer()
+                Button(isEditing ? "완료" : "수정"){
+                    isEditing.toggle()
+                }
+                .foregroundStyle(.blue)
+                .padding(.trailing)
+            }.padding(.bottom)
+           
             HStack {
                 ForEach(CalendarViewModel.weekdaySymbols, id: \.self) { symbol in
                     Text(symbol)
@@ -68,7 +77,9 @@ struct CalendarView: View {
                 isToday: Calendar.current.isDateInToday(date)
             )
             .onTapGesture {
-                toggleDate(date)
+                if isEditing{
+                    toggleDate(date)
+                }
             }
         }
     }
