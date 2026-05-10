@@ -1,12 +1,13 @@
-// MARK: - CalendarView.swift
-
 import SwiftUI
+import SwiftData
 
 struct CalendarView: View {
     @StateObject private var vm = CalendarViewModel(month: Date())
-    
+    @Query private var clickedDates: [ClickedDate]
+    @Environment(\.modelContext) private var modelContext
+
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             headerView
             calendarGridView
         }
@@ -21,15 +22,13 @@ struct CalendarView: View {
                 }
         )
     }
-    
-    // MARK: - 헤더 뷰
-    
+
     private var headerView: some View {
         VStack {
             Text(vm.monthTitle)
                 .font(.title)
                 .padding(.bottom)
-            
+
             HStack {
                 ForEach(CalendarViewModel.weekdaySymbols, id: \.self) { symbol in
                     Text(symbol)
@@ -39,60 +38,53 @@ struct CalendarView: View {
             .padding(.bottom, 5)
         }
     }
-    
-    // MARK: - 날짜 그리드 뷰
-    
+
     private var calendarGridView: some View {
         let totalCells = vm.daysInMonth + vm.firstWeekday
         let totalRows = Int(ceil(Double(totalCells) / 7.0))
-        
+
         return LazyVGrid(columns: Array(repeating: GridItem(spacing: 0), count: 7), spacing: 0) {
             ForEach(0 ..< totalRows * 7, id: \.self) { index in
                 if index < vm.firstWeekday || index >= totalCells {
                     Color.clear
-                        .frame(maxWidth: .infinity, minHeight: 40)
+                        .frame(maxWidth: .infinity, minHeight: 80)
                         .border(Color.gray.opacity(0.3), width: 0.5)
                 } else {
                     let date = vm.getDate(for: index - vm.firstWeekday)
                     let day = index - vm.firstWeekday + 1
-                    
-                    CellView(day: day, clicked: vm.isClicked(date))
+
+                    CellView(day: day, clicked: isClicked(date))
                         .onTapGesture {
-                            vm.toggleDate(date)
+                            toggleDate(date)
                         }
                 }
             }
         }
     }
+
+    private func isClicked(_ date: Date) -> Bool {
+        clickedDates.contains { Calendar.current.isDate($0.date, inSameDayAs: date) }
+    }
+
+    private func toggleDate(_ date: Date) {
+        if let existing = clickedDates.first(where: { Calendar.current.isDate($0.date, inSameDayAs: date) }) {
+            modelContext.delete(existing)
+        } else {
+            modelContext.insert(ClickedDate(date: date))
+        }
+    }
 }
 
-// MARK: - CellView.swift
 private struct CellView: View {
     let day: Int
     let clicked: Bool
     
     var body: some View {
-        VStack(spacing: 4) {
-            Text(String(day))
-                .font(.system(size: 14))
-                .foregroundColor(clicked ? .white : .primary)
-                .frame(maxWidth: .infinity, minHeight: 80)
-                .background(clicked ? Color.blue : Color.clear)
-//            
-//            if clicked {
-//                Text("Click")
-//                    .font(.caption)
-//                    .foregroundColor(.red)
-//            }
-        }
-        .frame(maxWidth: .infinity, minHeight: 40)
-        .border(Color.gray.opacity(0.3), width: 0.5) // ← 셀 테두리
+        Text(String(day))
+            .font(.system(size: 14))
+            .foregroundColor(clicked ? .white : .primary)
+            .frame(maxWidth: .infinity, minHeight: 80)
+            .background(clicked ? Color.blue : Color.clear)
+            .border(Color.gray.opacity(0.3), width: 0.5)
     }
-}
-
-
-// MARK: - Preview
-
-#Preview {
-    CalendarView()
 }
