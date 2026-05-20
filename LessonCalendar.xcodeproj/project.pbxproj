@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		718F98252FBD612A002739A6 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 718F98242FBD612A002739A6 /* WidgetKit.framework */; };
+		718F98272FBD612A002739A6 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 718F98262FBD612A002739A6 /* SwiftUI.framework */; };
+		718F98342FBD612B002739A6 /* WidgetExtensionExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 718F98222FBD612A002739A6 /* WidgetExtensionExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		718F97632FB0AC66002739A6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -21,13 +27,48 @@
 			remoteGlobalIDString = 718F974F2FB0AC64002739A6;
 			remoteInfo = LessonCalendar;
 		};
+		718F98322FBD612B002739A6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 718F97482FB0AC64002739A6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 718F98212FBD612A002739A6;
+			remoteInfo = WidgetExtensionExtension;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		718F98352FBD612B002739A6 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				718F98342FBD612B002739A6 /* WidgetExtensionExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		718F97502FB0AC64002739A6 /* LessonCalendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LessonCalendar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		718F97622FB0AC66002739A6 /* LessonCalendarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LessonCalendarTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		718F976C2FB0AC66002739A6 /* LessonCalendarUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LessonCalendarUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		718F98222FBD612A002739A6 /* WidgetExtensionExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WidgetExtensionExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		718F98242FBD612A002739A6 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		718F98262FBD612A002739A6 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		718F983B2FBD69BD002739A6 /* WidgetExtensionExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WidgetExtensionExtension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		718F98382FBD612B002739A6 /* Exceptions for "WidgetExtension" folder in "WidgetExtensionExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 718F98212FBD612A002739A6 /* WidgetExtensionExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		718F97522FB0AC64002739A6 /* LessonCalendar */ = {
@@ -43,6 +84,14 @@
 		718F976F2FB0AC66002739A6 /* LessonCalendarUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = LessonCalendarUITests;
+			sourceTree = "<group>";
+		};
+		718F98282FBD612A002739A6 /* WidgetExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				718F98382FBD612B002739A6 /* Exceptions for "WidgetExtension" folder in "WidgetExtensionExtension" target */,
+			);
+			path = WidgetExtension;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -69,15 +118,27 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		718F981F2FBD612A002739A6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				718F98272FBD612A002739A6 /* SwiftUI.framework in Frameworks */,
+				718F98252FBD612A002739A6 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		718F97472FB0AC64002739A6 = {
 			isa = PBXGroup;
 			children = (
+				718F983B2FBD69BD002739A6 /* WidgetExtensionExtension.entitlements */,
 				718F97522FB0AC64002739A6 /* LessonCalendar */,
 				718F97652FB0AC66002739A6 /* LessonCalendarTests */,
 				718F976F2FB0AC66002739A6 /* LessonCalendarUITests */,
+				718F98282FBD612A002739A6 /* WidgetExtension */,
+				718F98232FBD612A002739A6 /* Frameworks */,
 				718F97512FB0AC64002739A6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -88,8 +149,18 @@
 				718F97502FB0AC64002739A6 /* LessonCalendar.app */,
 				718F97622FB0AC66002739A6 /* LessonCalendarTests.xctest */,
 				718F976C2FB0AC66002739A6 /* LessonCalendarUITests.xctest */,
+				718F98222FBD612A002739A6 /* WidgetExtensionExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		718F98232FBD612A002739A6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				718F98242FBD612A002739A6 /* WidgetKit.framework */,
+				718F98262FBD612A002739A6 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -102,10 +173,12 @@
 				718F974C2FB0AC64002739A6 /* Sources */,
 				718F974D2FB0AC64002739A6 /* Frameworks */,
 				718F974E2FB0AC64002739A6 /* Resources */,
+				718F98352FBD612B002739A6 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				718F98332FBD612B002739A6 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				718F97522FB0AC64002739A6 /* LessonCalendar */,
@@ -163,6 +236,28 @@
 			productReference = 718F976C2FB0AC66002739A6 /* LessonCalendarUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		718F98212FBD612A002739A6 /* WidgetExtensionExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 718F98392FBD612B002739A6 /* Build configuration list for PBXNativeTarget "WidgetExtensionExtension" */;
+			buildPhases = (
+				718F981E2FBD612A002739A6 /* Sources */,
+				718F981F2FBD612A002739A6 /* Frameworks */,
+				718F98202FBD612A002739A6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				718F98282FBD612A002739A6 /* WidgetExtension */,
+			);
+			name = WidgetExtensionExtension;
+			packageProductDependencies = (
+			);
+			productName = WidgetExtensionExtension;
+			productReference = 718F98222FBD612A002739A6 /* WidgetExtensionExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -184,6 +279,9 @@
 						CreatedOnToolsVersion = 16.2;
 						TestTargetID = 718F974F2FB0AC64002739A6;
 					};
+					718F98212FBD612A002739A6 = {
+						CreatedOnToolsVersion = 16.2;
+					};
 				};
 			};
 			buildConfigurationList = 718F974B2FB0AC64002739A6 /* Build configuration list for PBXProject "LessonCalendar" */;
@@ -203,6 +301,7 @@
 				718F974F2FB0AC64002739A6 /* LessonCalendar */,
 				718F97612FB0AC66002739A6 /* LessonCalendarTests */,
 				718F976B2FB0AC66002739A6 /* LessonCalendarUITests */,
+				718F98212FBD612A002739A6 /* WidgetExtensionExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -223,6 +322,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		718F976A2FB0AC66002739A6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		718F98202FBD612A002739A6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -253,6 +359,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		718F981E2FBD612A002739A6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -265,6 +378,11 @@
 			isa = PBXTargetDependency;
 			target = 718F974F2FB0AC64002739A6 /* LessonCalendar */;
 			targetProxy = 718F976D2FB0AC66002739A6 /* PBXContainerItemProxy */;
+		};
+		718F98332FBD612B002739A6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 718F98212FBD612A002739A6 /* WidgetExtensionExtension */;
+			targetProxy = 718F98322FBD612B002739A6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -393,6 +511,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = LessonCalendar/LessonCalendar.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"LessonCalendar/Preview Content\"";
@@ -411,6 +531,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = Siye.LessonCalendar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -422,6 +543,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = LessonCalendar/LessonCalendar.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"LessonCalendar/Preview Content\"";
@@ -440,6 +563,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = Siye.LessonCalendar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -518,6 +642,62 @@
 			};
 			name = Release;
 		};
+		718F98362FBD612B002739A6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = WidgetExtensionExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = R83JF9K5WA;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WidgetExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = WidgetExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Siye.LessonCalendar.WidgetExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		718F98372FBD612B002739A6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = WidgetExtensionExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = R83JF9K5WA;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WidgetExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = WidgetExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Siye.LessonCalendar.WidgetExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -553,6 +733,15 @@
 			buildConfigurations = (
 				718F977D2FB0AC66002739A6 /* Debug */,
 				718F977E2FB0AC66002739A6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		718F98392FBD612B002739A6 /* Build configuration list for PBXNativeTarget "WidgetExtensionExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				718F98362FBD612B002739A6 /* Debug */,
+				718F98372FBD612B002739A6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -9,5 +9,4 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: ClickedDate.self, inMemory: true)
 }
