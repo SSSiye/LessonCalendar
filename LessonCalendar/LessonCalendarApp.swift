@@ -7,6 +7,5 @@ struct LessonCalendarApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: ClickedDate.self)
     }
 }

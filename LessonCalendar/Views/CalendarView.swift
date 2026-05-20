@@ -1,12 +1,10 @@
 import SwiftUI
-import SwiftData
+import WidgetKit
 
 struct CalendarView: View {
     @StateObject private var vm = CalendarViewModel(month: Date())
-    @Query private var clickedDates: [ClickedDate]
-    @Environment(\.modelContext) private var modelContext
     @State private var isEditing: Bool = false
-    @State private var currentOffset: Int = 0  // ← 현재 월 오프셋
+    @State private var currentOffset: Int = 0
 
     var body: some View {
         VStack(spacing: 0) {
@@ -17,7 +15,7 @@ struct CalendarView: View {
                 ForEach(-12 ..< 12, id: \.self) { offset in
                     monthGridView(for: vm.month(for: offset))
                         .tag(offset)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)  
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
@@ -27,7 +25,6 @@ struct CalendarView: View {
         }
     }
 
-    // MARK: - 헤더
     private var headerView: some View {
         HStack {
             Spacer()
@@ -40,7 +37,7 @@ struct CalendarView: View {
             .foregroundColor(.blue)
             .padding(.trailing)
         }
-        .padding(.vertical, 12)  // 위아래 패딩만
+        .padding(.vertical, 12)
     }
 
     private var weekdayHeader: some View {
@@ -51,10 +48,9 @@ struct CalendarView: View {
             }
         }
         .padding(.vertical, 8)
-        .background(Color.gray.opacity(0.05))  // 살짝 구분선 느낌
+        .background(Color.gray.opacity(0.05))
     }
 
-    // MARK: - 월별 그리드
     private func monthGridView(for month: Date) -> some View {
         let daysInMonth = Calendar.current.range(of: .day, in: .month, for: month)?.count ?? 0
         let firstWeekday = firstWeekdayOf(month: month)
@@ -80,18 +76,17 @@ struct CalendarView: View {
 
             CellView(
                 day: day,
-                clicked: isClicked(date),
+                clicked: vm.isClicked(date),
                 isToday: Calendar.current.isDateInToday(date)
             )
             .onTapGesture {
                 if isEditing {
-                    toggleDate(date)
+                    vm.toggleDate(date)
                 }
             }
         }
     }
 
-    // MARK: - 헬퍼
     private func firstWeekdayOf(month: Date) -> Int {
         let components = Calendar.current.dateComponents([.year, .month], from: month)
         let firstDay = Calendar.current.date(from: components)!
@@ -103,21 +98,8 @@ struct CalendarView: View {
         let startOfMonth = Calendar.current.date(from: components)!
         return Calendar.current.date(byAdding: .day, value: day, to: startOfMonth)!
     }
-
-    private func isClicked(_ date: Date) -> Bool {
-        clickedDates.contains { Calendar.current.isDate($0.date, inSameDayAs: date) }
-    }
-
-    private func toggleDate(_ date: Date) {
-        if let existing = clickedDates.first(where: { Calendar.current.isDate($0.date, inSameDayAs: date) }) {
-            modelContext.delete(existing)
-        } else {
-            modelContext.insert(ClickedDate(date: date))
-        }
-    }
 }
 
-// MARK: - CellView
 private struct CellView: View {
     let day: Int
     let clicked: Bool
@@ -130,7 +112,6 @@ private struct CellView: View {
                     .stroke(clicked ? Color.white : Color.blue, lineWidth: 1.5)
                     .padding(4)
             }
-
             Text(String(day))
                 .font(.system(size: 14))
                 .foregroundColor(.primary)
@@ -143,5 +124,4 @@ private struct CellView: View {
 
 #Preview {
     CalendarView()
-        .modelContainer(for: ClickedDate.self, inMemory: true)
 }
