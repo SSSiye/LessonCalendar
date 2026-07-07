@@ -2,15 +2,19 @@ import SwiftUI
 import WidgetKit
 
 struct CalendarView: View {
-    @StateObject private var vm = CalendarViewModel(month: Date())
+    @StateObject private var vm: CalendarViewModel
     @State private var isEditing: Bool = false
     @State private var currentOffset: Int = 0
+
+    init(lessonCode: String? = nil) {
+        _vm = StateObject(wrappedValue: CalendarViewModel(month: Date(), lessonCode: lessonCode))
+    }
 
     var body: some View {
         VStack(spacing: 0) {
             headerView
             weekdayHeader
-            
+
             TabView(selection: $currentOffset) {
                 ForEach(-12 ..< 12, id: \.self) { offset in
                     monthGridView(for: vm.month(for: offset))
@@ -23,6 +27,17 @@ struct CalendarView: View {
                 vm.month = vm.month(for: newOffset)
             }
         }
+        .task {
+            await vm.loadFromFirestore()
+        }
+        .alert("오류", isPresented: .init(
+            get: { vm.errorMessage != nil },
+            set: { if !$0 { vm.errorMessage = nil } }
+        )) {
+            Button("확인", role: .cancel) {}
+        } message: {
+            Text(vm.errorMessage ?? "")
+        }
     }
 
     private var headerView: some View {
@@ -31,11 +46,22 @@ struct CalendarView: View {
             Text(vm.monthTitle)
                 .font(.title)
             Spacer()
-            Button(isEditing ? "완료" : "수정") {
-                isEditing.toggle()
+            if vm.isSaving {
+                ProgressView()
+                    .padding(.trailing)
+            } else {
+                Button(isEditing ? "저장" : "수정") {
+                    isEditing.toggle()
+                    // 수정을 마치면 수강생들이 볼 수 있도록 Firestore에 저장
+                    if !isEditing {
+                        Task {
+                            await vm.saveToFirestore()
+                        }
+                    }
+                }
+                .foregroundColor(.blue)
+                .padding(.trailing)
             }
-            .foregroundColor(.blue)
-            .padding(.trailing)
         }
         .padding(.vertical, 12)
     }

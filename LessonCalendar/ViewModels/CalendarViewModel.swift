@@ -1,12 +1,19 @@
 import SwiftUI
 import WidgetKit
 
+@MainActor
 class CalendarViewModel: ObservableObject {
     @Published var month: Date
     @Published var clickedDates: Set<Date> = []
+    @Published var isSaving: Bool = false
+    @Published var errorMessage: String?
 
-    init(month: Date) {
+    /// 참여 중인 레슨방 코드 - 있으면 Firestore와 동기화
+    let lessonCode: String?
+
+    init(month: Date, lessonCode: String? = nil) {
         self.month = month
+        self.lessonCode = lessonCode
         loadFromUserDefaults()
     }
 
@@ -52,12 +59,40 @@ class CalendarViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Firestore 동기화
+
+    /// Firestore에서 레슨 날짜를 불러와 화면과 위젯에 반영
+    func loadFromFirestore() async {
+        guard let lessonCode else { return }
+
+        do {
+            let dateStrings = try await FirestoreService.shared.fetchLessonDates(code: lessonCode)
+            clickedDates = Set(dateStrings.compactMap { Self.dayFormatter.date(from: $0) })
+            syncToWidget()
+        } catch {
+            errorMessage = "레슨 날짜를 불러오지 못했어요: \(error.localizedDescription)"
+        }
+    }
+
+    /// 현재 선택된 날짜들을 Firestore에 저장 (수강생들이 볼 수 있게)
+    func saveToFirestore() async {
+        guard let lessonCode else { return }
+
+        isSaving = true
+        let dateStrings = clickedDates.map { Self.dayFormatter.string(from: $0) }.sorted()
+
+        do {
+            try await FirestoreService.shared.updateLessonDates(code: lessonCode, dates: dateStrings)
+        } catch {
+            errorMessage = "레슨 날짜 저장에 실패했어요: \(error.localizedDescription)"
+        }
+        isSaving = false
+    }
+
     // MARK: - UserDefaults 저장/불러오기
 
     func syncToWidget() {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        let dateStrings = clickedDates.map { formatter.string(from: $0) }
+        let dateStrings = clickedDates.map { Self.dayFormatter.string(from: $0) }
 
         let sharedDefaults = UserDefaults(suiteName: "group.Siye.LessonCalendar")
         sharedDefaults?.set(dateStrings, forKey: "lessonDates")
@@ -67,13 +102,10 @@ class CalendarViewModel: ObservableObject {
     }
 
     func loadFromUserDefaults() {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-
         let sharedDefaults = UserDefaults(suiteName: "group.Siye.LessonCalendar")
         let dateStrings = sharedDefaults?.stringArray(forKey: "lessonDates") ?? []
 
-        clickedDates = Set(dateStrings.compactMap { formatter.date(from: $0) })
+        clickedDates = Set(dateStrings.compactMap { Self.dayFormatter.date(from: $0) })
         print("💛 불러온 날짜들: \(dateStrings)")
     }
 
@@ -89,6 +121,13 @@ class CalendarViewModel: ObservableObject {
     static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy년 M월"
+        return formatter
+    }()
+
+    /// Firestore와 위젯 공유에 함께 쓰는 날짜 포맷
+    static let dayFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
         return formatter
     }()
 
