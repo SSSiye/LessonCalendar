@@ -2,6 +2,9 @@ import SwiftUI
 
 /// 2. 레슨 코드 생성 화면 - 대표가 레슨방을 만드는 화면
 struct CreateLessonView: View {
+    /// 레슨방 생성 완료 후 캘린더 탭 화면으로 전환하기 위한 콜백
+    var onEnter: (LessonSession) -> Void = { _ in }
+
     @State private var lessonName: String = ""
     @State private var lessonCode: String = FirestoreService.generateLessonCode()
     @State private var isCreating: Bool = false
@@ -143,7 +146,9 @@ struct CreateLessonView: View {
                 .buttonStyle(.bordered)
                 .controlSize(.large)
 
-                NavigationLink(value: AppRoute.home(lessonName: trimmedName, lessonCode: lessonCode, role: .owner)) {
+                Button {
+                    onEnter(LessonSession(lessonName: trimmedName, lessonCode: lessonCode, role: .owner))
+                } label: {
                     Text("캘린더 시작하기")
                         .frame(maxWidth: .infinity)
                 }

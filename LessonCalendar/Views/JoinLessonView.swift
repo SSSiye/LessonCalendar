@@ -2,10 +2,11 @@ import SwiftUI
 
 /// 4. 수강생 코드 입력 화면 - 코드를 입력해 레슨방에 참여
 struct JoinLessonView: View {
+    /// 입장 성공 후 수강생용 캘린더 탭 화면으로 전환하기 위한 콜백
+    var onEnter: (LessonSession) -> Void = { _ in }
+
     @State private var code: String = ""
-    @State private var lessonName: String = ""
     @State private var isJoining: Bool = false
-    @State private var isJoined: Bool = false
     @State private var errorMessage: String = ""
 
     private var trimmedCode: String {
@@ -59,13 +60,6 @@ struct JoinLessonView: View {
         .padding(24)
         .navigationTitle("레슨 참여하기")
         .navigationBarTitleDisplayMode(.inline)
-        // 입장 성공 시 5. 수강생용 캘린더로 이동 (확인 전용)
-        .navigationDestination(isPresented: $isJoined) {
-            CalendarView(lessonCode: trimmedCode, isEditable: false)
-                .navigationTitle(lessonName)
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationBarBackButtonHidden(true)
-        }
     }
 
     private func joinLesson() {
@@ -77,10 +71,10 @@ struct JoinLessonView: View {
         Task {
             do {
                 if let name = try await FirestoreService.shared.fetchLessonName(code: trimmedCode) {
-                    lessonName = name
                     // 다음 실행부터는 역할 선택 없이 바로 캘린더로 진입
-                    LessonSession(lessonName: name, lessonCode: trimmedCode, role: .student).save()
-                    isJoined = true
+                    let session = LessonSession(lessonName: name, lessonCode: trimmedCode, role: .student)
+                    session.save()
+                    onEnter(session)
                 } else {
                     errorMessage = "해당 코드의 레슨방을 찾을 수 없어요. 코드를 다시 확인해주세요."
                 }

@@ -63,6 +63,11 @@ final class FirestoreService {
         ])
     }
 
+    /// 레슨방 삭제 - 대표가 설정 화면에서 사용
+    func deleteLesson(code: String) async throws {
+        try await db.collection("lessons").document(code).delete()
+    }
+
     /// 레슨 날짜 조회 - 수강생/대표가 캘린더를 열 때 사용
     func fetchLessonDates(code: String) async throws -> [String] {
         let snapshot = try await db.collection("lessons").document(code).getDocument()
