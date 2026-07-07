@@ -50,6 +50,12 @@ final class FirestoreService {
         return finalCode
     }
 
+    /// 레슨방 이름 조회 - 수강생이 코드로 입장할 때 사용 (레슨방이 없으면 nil)
+    func fetchLessonName(code: String) async throws -> String? {
+        let snapshot = try await db.collection("lessons").document(code).getDocument()
+        return snapshot.data()?["name"] as? String
+    }
+
     /// 레슨 날짜 저장 - "yyyy-MM-dd" 문자열 배열로 lessonDates 필드를 통째로 교체
     func updateLessonDates(code: String, dates: [String]) async throws {
         try await db.collection("lessons").document(code).updateData([

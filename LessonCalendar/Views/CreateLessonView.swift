@@ -143,7 +143,7 @@ struct CreateLessonView: View {
                 .buttonStyle(.bordered)
                 .controlSize(.large)
 
-                NavigationLink(value: AppRoute.home(lessonName: trimmedName, lessonCode: lessonCode)) {
+                NavigationLink(value: AppRoute.home(lessonName: trimmedName, lessonCode: lessonCode, role: .owner)) {
                     Text("캘린더 시작하기")
                         .frame(maxWidth: .infinity)
                 }

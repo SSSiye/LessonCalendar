@@ -7,7 +7,7 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             if let session {
-                CalendarView(lessonCode: session.lessonCode)
+                CalendarView(lessonCode: session.lessonCode, isEditable: session.role == .owner)
                     .navigationTitle(session.lessonName)
                     .navigationBarTitleDisplayMode(.inline)
             } else {
@@ -17,10 +17,9 @@ struct ContentView: View {
                         case .createLesson:
                             CreateLessonView()
                         case .joinLesson:
-                            // TODO: 4. 수강생 코드 입력 화면으로 교체
-                            Text("레슨 코드 입력 화면 (준비 중)")
-                        case .home(let lessonName, let lessonCode):
-                            CalendarView(lessonCode: lessonCode)
+                            JoinLessonView()
+                        case .home(let lessonName, let lessonCode, let role):
+                            CalendarView(lessonCode: lessonCode, isEditable: role == .owner)
                                 .navigationTitle(lessonName)
                                 .navigationBarTitleDisplayMode(.inline)
                                 .navigationBarBackButtonHidden(true)
