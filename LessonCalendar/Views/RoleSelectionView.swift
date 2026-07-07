@@ -2,8 +2,9 @@ import SwiftUI
 
 /// 앱 화면 이동 경로
 enum AppRoute: Hashable {
-    case createLesson   // 2. 레슨 코드 생성 화면 (대표)
-    case joinLesson     // 4. 수강생 코드 입력 화면
+    case createLesson                   // 2. 레슨 코드 생성 화면 (대표)
+    case joinLesson                     // 4. 수강생 코드 입력 화면
+    case home(lessonName: String, lessonCode: String)   // 3. 캘린더 홈 화면
 }
 
 /// 1. 시작 화면 - 역할 선택
