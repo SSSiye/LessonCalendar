@@ -6,7 +6,11 @@ struct CalendarView: View {
     @State private var isEditing: Bool = false
     @State private var currentOffset: Int = 0
 
-    init(lessonCode: String? = nil) {
+    /// 대표만 일정을 수정할 수 있고, 수강생은 확인만 가능
+    private let isEditable: Bool
+
+    init(lessonCode: String? = nil, isEditable: Bool = true) {
+        self.isEditable = isEditable
         _vm = StateObject(wrappedValue: CalendarViewModel(month: Date(), lessonCode: lessonCode))
     }
 
@@ -43,24 +47,50 @@ struct CalendarView: View {
     private var headerView: some View {
         HStack {
             Spacer()
+
+            // 이전 달 이동
+            Button {
+                withAnimation {
+                    currentOffset -= 1
+                }
+            } label: {
+                Image(systemName: "chevron.left")
+            }
+            .disabled(currentOffset <= -12)
+
             Text(vm.monthTitle)
                 .font(.title)
+                .padding(.horizontal, 12)
+
+            // 다음 달 이동
+            Button {
+                withAnimation {
+                    currentOffset += 1
+                }
+            } label: {
+                Image(systemName: "chevron.right")
+            }
+            .disabled(currentOffset >= 11)
+
             Spacer()
-            if vm.isSaving {
-                ProgressView()
-                    .padding(.trailing)
-            } else {
-                Button(isEditing ? "저장" : "수정") {
-                    isEditing.toggle()
-                    // 수정을 마치면 수강생들이 볼 수 있도록 Firestore에 저장
-                    if !isEditing {
-                        Task {
-                            await vm.saveToFirestore()
+
+            if isEditable {
+                if vm.isSaving {
+                    ProgressView()
+                        .padding(.trailing)
+                } else {
+                    Button(isEditing ? "저장" : "수정") {
+                        isEditing.toggle()
+                        // 수정을 마치면 수강생들이 볼 수 있도록 Firestore에 저장
+                        if !isEditing {
+                            Task {
+                                await vm.saveToFirestore()
+                            }
                         }
                     }
+                    .foregroundColor(.blue)
+                    .padding(.trailing)
                 }
-                .foregroundColor(.blue)
-                .padding(.trailing)
             }
         }
         .padding(.vertical, 12)
@@ -148,6 +178,10 @@ private struct CellView: View {
     }
 }
 
-#Preview {
+#Preview("대표") {
     CalendarView()
+}
+
+#Preview("수강생") {
+    CalendarView(isEditable: false)
 }
